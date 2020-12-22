@@ -2,21 +2,20 @@
 Ismat - Engenheria Informática 1º Ano
 Fundamentos de Programação - Prof. Francisco Pereira
 Leandro Fonseca
-18/12/2020 - 16:40
-Resumo: Programa com menus e 5 opçoes
+22/12/2020 - 02:18
+Resumo: Programa com menus e 5 opçoes em funçoes
 Inputs:
 Outputs:
  */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <ctype.h>
-#include <time.h>
 #include <locale.h>
-#include <math.h>
 
 //Define do tamanho dos arrays
 #define ARRAY_DIMENSION 5
+#define ARRAY_MEDIA_COLUMNS 2
+#define ARRAY_MEDIA_LINES 5
 
 //Define dos Textos do printMenu()
 #define TEXT_MENU_LINE1 "|--------------------------------------------------|\n"
@@ -36,33 +35,36 @@ Outputs:
 #define TEXT_INVALID_OPTION "Opção invalida!\n"
 
 //Define dos Textos da entrada de valores
+#define TEXT_OPTION4_ARRAY "Array %d :\n"
+#define TEXT_OPTION4_ARRAY_INPUT "Elemento do array de index %d: "
 #define TEXT_OPTION1_INPUT "Escolha um valor para %c: "
-#define TEXT_ARRAY_INDEX_VALUE "Elemento do array de index %d: "
-#define TEXT_INVALID_VALUE "Valor incorreto! \nValor nao compreendido entre 1 e 100!\n"
 
 //Define dos Textos das Opçoes Selecionadas e Resultados
 #define TEXT_OPTION1 "Opção 1 selecionada - Calcula a soma (x+y-3²), produto (x-5)*(y+4), e a potência (x^y)\n\n"
 #define TEXT_OPTION1_RESULT "Soma (x+y-3²) = %d; Produto (x-5)*(y+4) = %d; Potência (x^y) = %d"
 #define TEXT_OPTION2 "Opção 2 selecionada - Escreve a média das notas dos 5 alunos de uma turma sabendo que têm 2 disciplinas\n\n"
+#define TEXT_OPTION2_RESULT "Média das notas dos alunos: %g"
 #define TEXT_OPTION3 "Opção 3 selecionada - Calcular recursivamente a soma dos n números impares\n"
-#define TEXT_PRINT_INT_RESULT "%d; "
+#define TEXT_OPTION3_RESULT "Soma de n (%d) números impares: %d"
 #define TEXT_OPTION4 "Opção 4 selecionada - Cria dois vetores com 5 elementos e em seguida somá-los e multiplica-los termo a termo\n"
-#define TEXT_OPTION4_RESULT "\nMédia de elementos do vetor3: %g"
+#define TEXT_OPTION4_RESULT1 "\nSoma dos elementos: \n"
+#define TEXT_OPTION4_RESULT2 "\nProduto dos elementos: \n"
+
 #define TEXT_OPTION5 "Opção 5 selecionada - Sair\n"
 
-int checkArrayValueZero(int intArray[ARRAY_DIMENSION])
+int checkArrayValueZero(float fltArray[ARRAY_DIMENSION])
 {
     int intContador, intFlag = 0;
     for(intContador = 0; intContador < ARRAY_DIMENSION; intContador++)
     {
-        if(intArray[intContador] != 0){
+        if(fltArray[intContador] != 0){
             intFlag = 1;
         }
     }
     return intFlag;
 }
 
-int resetArrays(int intArray2[ARRAY_DIMENSION], int intArray3[ARRAY_DIMENSION])
+int resetArrays(float fltArray1[ARRAY_DIMENSION], float fltArray2[ARRAY_DIMENSION])
 {
     int intContador, intResultOK, intResultCheck;
 
@@ -70,18 +72,18 @@ int resetArrays(int intArray2[ARRAY_DIMENSION], int intArray3[ARRAY_DIMENSION])
     for (intContador = 0; intContador < ARRAY_DIMENSION; intContador++)
     {
         //Igual todos os elementos do array a 0
-        intArray2[intContador] = 0;
-        intArray3[intContador] = 0;
+        fltArray1[intContador] = 0;
+        fltArray2[intContador] = 0;
     }
 
-    intResultCheck = checkArrayValueZero(intArray2);
+    intResultCheck = checkArrayValueZero(fltArray1);
 
     //Verificar se o array2  foi resetado
     if(intResultCheck != 1){
         intResultOK = 0;
     }else{
         //Primeiro array OK; Verificar segundo
-        intResultCheck = checkArrayValueZero(intArray3);
+        intResultCheck = checkArrayValueZero(fltArray2);
         if(intResultCheck != 1){
             intResultOK = 0;
         }else{
@@ -107,7 +109,7 @@ void printMenu()
     printf(TEXT_MENU_LINE9);
 }
 
-int checkExit(int intArrayLocal[ARRAY_DIMENSION], int intArrayLocal2[ARRAY_DIMENSION])
+int checkExit(float fltArrayLocal[ARRAY_DIMENSION], float fltArrayLocal2[ARRAY_DIMENSION])
 {
     int intResult = 1;
     char chrOptionConfirm;
@@ -124,7 +126,7 @@ int checkExit(int intArrayLocal[ARRAY_DIMENSION], int intArrayLocal2[ARRAY_DIMEN
         {
             //Caso seja 's', da reset arrays e continua
             printf(TEXT_CONTINUE_OPTION);
-            resetArrays(intArrayLocal,intArrayLocal2);
+            resetArrays(fltArrayLocal,fltArrayLocal2);
         }else if (chrOptionConfirm == 'n')
         {
             //Caso seja 'n' da print do menu e passa a flag a 0
@@ -143,137 +145,135 @@ int checkExit(int intArrayLocal[ARRAY_DIMENSION], int intArrayLocal2[ARRAY_DIMEN
     return intResult;
 }
 
-float getArrayMedia(int intArray[ARRAY_DIMENSION])
+void getArrayMedia(float floatMatrix[ARRAY_MEDIA_LINES][ARRAY_MEDIA_COLUMNS])
 {
     float fltValueReturn = 0;
-    int intCounter;
+    int intCounterLines, intCounterColumns;
     //Percorre o array em toda a sua dimensao
-    for (intCounter = 0; intCounter < 10; intCounter++)
+    for (intCounterLines = 0; intCounterLines < ARRAY_MEDIA_LINES; intCounterLines++)
     {
-        //Somatorio dos elementos
-        fltValueReturn += intArray[intCounter];
+        for (intCounterColumns = 0; intCounterColumns < ARRAY_MEDIA_COLUMNS; intCounterColumns++)
+        {
+            //Somatorio dos elementos
+            fltValueReturn += floatMatrix[intCounterLines][intCounterColumns];
+        }
+
     }
-    return fltValueReturn /= 10;
+    printf(TEXT_OPTION2_RESULT , fltValueReturn / 10);
 }
 
-void get2ArrayMedia(int intArray1[ARRAY_DIMENSION], int intArray2[ARRAY_DIMENSION])
+void get2ArrayCalc(float fltArray1[ARRAY_DIMENSION], float fltArray2[ARRAY_DIMENSION])
 {
     int intCounter;
+
+    printf(TEXT_OPTION4_RESULT1);
     //Percorre o array em toda sua dimensao
-    for (intCounter = 0; intCounter < 10; intCounter++)
+    for (intCounter = 0; intCounter < ARRAY_DIMENSION; intCounter++)
     {
         //Somatorio dos elementos
-        printf("%g; ",(float)(intArray1[intCounter] + intArray2[intCounter])/2.0);
+        printf("%g; ",(fltArray1[intCounter] + fltArray2[intCounter]));
+    }
+    printf(TEXT_OPTION4_RESULT2);
+    for (intCounter = 0; intCounter < ARRAY_DIMENSION; intCounter++)
+    {
+        //Produtorio dos elementos
+        printf("%g; ",(fltArray1[intCounter] * fltArray2[intCounter]));
     }
 }
 
 void optionCase1()
 {
-    float fltValueOfX = 0, fltValueOfY = 0, teste;
+    int intValueOfX = 0, intValueOfY = 0, intPotenciaX_Y = 1;
 
     //Pedir ao user Valores para X e Y
-    printf(TEXT_OPTION1_INPUT, "x");
-    scanf("%f", &fltValueOfX);
-    printf(TEXT_OPTION1_INPUT, "Y");
-    scanf("%f", &fltValueOfY);
+    printf(TEXT_OPTION1_INPUT, 'x');
+    scanf("%d", &intValueOfX);
+    printf(TEXT_OPTION1_INPUT, 'y');
+    scanf("%d", &intValueOfY);
 
-//    teste = pow( fltValueOfX,  fltValueOfY);
 
-    printf(TEXT_OPTION1_RESULT,(fltValueOfX + fltValueOfY - 3.0*3.0), (fltValueOfX - 5.0)*(fltValueOfY + 4.0), teste );
+    for(int intCounter = 0; intCounter < intValueOfY ; intCounter++)
+    {
+        intPotenciaX_Y *= intValueOfX;
+    }
+
+    printf(TEXT_OPTION1_RESULT,(intValueOfX + intValueOfY - 9), (intValueOfX - 5)*(intValueOfY + 4), intPotenciaX_Y );
 
 }
 
-void *optionCase2(int intArrayUser2[ARRAY_DIMENSION])
+void optionCase2()
 {
-    int intLinhas = 0, intColunas = ARRAY_DIMENSION;
-    static int intArraySwitch[ARRAY_DIMENSION];
+    float fltMediaArray[ARRAY_MEDIA_LINES][ARRAY_MEDIA_COLUMNS];
+    int intArrayLinesCounter, intArrayColumnsCounter;
 
     //Percorre o array em linhas e colunas
-    for (intLinhas, intColunas; intLinhas < ARRAY_DIMENSION; --intColunas, intLinhas++)
-    {
-        //Passar os elementos em ordem inversa
-        intArraySwitch[intLinhas] = intArrayUser2[intColunas - 1];
-    }
-    //Retornar pointer do array
-    return intArraySwitch;
-}
-
-int *optionCase3(int intArrayData[ARRAY_DIMENSION])
-{
-    static int intArrayMerged[ARRAY_DIMENSION] = {0};
-    int intContador = 0, intArrayTemp[ARRAY_DIMENSION] = {0},intOrder = 0;
-
-    //Percorrer o array original em toda a sua dimensao
-    for (intContador; intContador < ARRAY_DIMENSION; intContador++)
-    {
-        //Identificar se o valor do array é par ou impar
-        if(intArrayData[intContador] % 2 != 0)
-        {
-            //Impar guarda em array final
-            intArrayMerged[intOrder] = intArrayData[intContador];
-            intOrder++;
-        }else
-        {
-            //Par guarda em array temporario
-            intArrayTemp[intContador] = intArrayData[intContador];
-        }
-
-    }
-
-    //Percorrer o array temporario em toda a sua dimensao
-    for(intContador=0; intContador < ARRAY_DIMENSION; intContador++)
-    {
-        //Validar valor de array temporario
-        if(intArrayTemp[intContador] != 0)
-        {
-            //Passar elementos do array temporario para o final
-            intArrayMerged[intOrder] = intArrayTemp[intContador];
-            intOrder++;
+    for (intArrayLinesCounter = 0; intArrayLinesCounter < ARRAY_MEDIA_LINES; intArrayLinesCounter++){
+        for (intArrayColumnsCounter = 0; intArrayColumnsCounter < ARRAY_MEDIA_COLUMNS; intArrayColumnsCounter++){
+            printf("[%d][%d]<- ", intArrayLinesCounter+1, intArrayColumnsCounter+1);
+            scanf(" %f", &fltMediaArray[intArrayLinesCounter][intArrayColumnsCounter]);
         }
     }
-    //Retornar pointer do array
-    return intArrayMerged;
+
+    getArrayMedia(fltMediaArray);
+
 }
 
-int *optionCase4(int intArrayData[ARRAY_DIMENSION])
+void optionCase3()
 {
-    static int intArrayMerged[ARRAY_DIMENSION] = {0};
-    int intContador, intArrayTemp[ARRAY_DIMENSION] = {50,50,50,50,50,50,50,50,50,50};
+    int intContador, intN = 0, intSomaNImpares = 0, intImpar = 1;
 
-    //Percorrer o array original em toda a sua dimensao
-    for (intContador = 0; intContador < ARRAY_DIMENSION; intContador++)
+    printf(TEXT_OPTION1_INPUT, 'n');
+    scanf(" %d", &intN);
+
+    for (intContador = 0; intContador < intN; intContador++)
     {
-        //Passar diferença ao quadrado para array final
-        intArrayMerged[intContador]=(intArrayTemp[intContador] - intArrayData[intContador])*(intArrayTemp[intContador] - intArrayData[intContador]);
+        intSomaNImpares += intImpar;
+        intImpar += 2;
     }
-    //Retornar pointer do array
-    return intArrayMerged;
+
+    printf(TEXT_OPTION3_RESULT, intN, intSomaNImpares);
 }
 
-void optionCase5()
+void optionCase4()
 {
-    int intArrayVetor2[ARRAY_DIMENSION] = {0}, intArrayVetor3[ARRAY_DIMENSION] = {0};
-    srand(time(NULL));
+    float fltArray1[ARRAY_DIMENSION], fltArray2[ARRAY_DIMENSION];
+    fltArray1[ARRAY_DIMENSION]=0 , fltArray2[ARRAY_DIMENSION] = 0;
+    int i;
 
-    //Percorrer os arrays nas suas dimensoes
-    for(int i = 0; i < ARRAY_DIMENSION; i++){
-        //Atribuir valores random de 1 a 100 aos elementos do array
-        intArrayVetor2[i] = rand() % 100 + 1;
-        intArrayVetor3[i] = rand() % 100 + 1;
+    printf(TEXT_OPTION4_ARRAY, 1);
+    for (i = 0; i < ARRAY_DIMENSION; ++i) {
+        printf(TEXT_OPTION4_ARRAY_INPUT,i);
+        scanf("%f",&fltArray1[i]);
     }
-    //Usar funçao para calcular media de cada elemento do array
-    get2ArrayMedia(intArrayVetor2, intArrayVetor3);
+
+    printf(TEXT_OPTION4_ARRAY, 2);
+    for (i = 0; i < ARRAY_DIMENSION; ++i) {
+        printf(TEXT_OPTION4_ARRAY_INPUT,i);
+        scanf("%f",&fltArray2[i]);
+    }
+
+    get2ArrayCalc(fltArray1, fltArray2);
+
+
+}
+
+int optionCase5()
+{
+    int intExit=0;
+    printf(TEXT_OPTION5);
+    printf(TEXT_EXIT_OPTION);
+    return intExit;
+
 }
 
 void main(){
     setlocale(LC_ALL, "Portuguese");
-    int *arrayPointerAdress;
-    int intArrayUser[ARRAY_DIMENSION],intArray2[ARRAY_DIMENSION],intCounter,intExit, intOptionResult;
-    int intArray3[ARRAY_DIMENSION];
+    int intExit, intOptionResult;
+    float fltArray1[ARRAY_DIMENSION], fltArray2[ARRAY_DIMENSION];
     char chrMenuOption;
     intExit = 1;
 
-    printMenu(chrMenuOption);
+    printMenu();
     scanf(" %c",&chrMenuOption);
 
     while(intExit != 0)
@@ -283,7 +283,8 @@ void main(){
             case '1':
                 printf(TEXT_OPTION1);
                 optionCase1();
-                intOptionResult = checkExit(intArray2,intArray3);
+
+                intOptionResult = checkExit(fltArray1,fltArray2);
 
                 if(intOptionResult != 1)
                 {
@@ -296,13 +297,9 @@ void main(){
 
             case '2':
                 printf(TEXT_OPTION2);
-                arrayPointerAdress = optionCase2(intArrayUser);
+                optionCase2();
 
-                for (intCounter = 0; intCounter < 10; intCounter++) {
-                    printf(TEXT_PRINT_INT_RESULT, arrayPointerAdress[intCounter]);
-                }
-
-                intOptionResult = checkExit(intArray2,intArray3);
+                intOptionResult = checkExit(fltArray1,fltArray2);
 
                 if(intOptionResult != 1)
                 {
@@ -315,12 +312,8 @@ void main(){
 
             case '3':
                 printf(TEXT_OPTION3);
-                arrayPointerAdress = optionCase3(intArrayUser);
-
-                for (intCounter = 0; intCounter < 10; intCounter++) {
-                    printf(TEXT_PRINT_INT_RESULT, arrayPointerAdress[intCounter]);
-                }
-                intOptionResult = checkExit(intArray2,intArray3);
+                optionCase3();
+                intOptionResult = checkExit(fltArray1,fltArray2);
 
                 if(intOptionResult != 1)
                 {
@@ -332,18 +325,9 @@ void main(){
                 }
             case '4':
                 printf(TEXT_OPTION4);
+                optionCase4();
 
-                arrayPointerAdress = optionCase4(intArrayUser);
-
-                for (intCounter = 0; intCounter < 10; intCounter++) {
-                    printf(TEXT_PRINT_INT_RESULT, arrayPointerAdress[intCounter]);
-                }
-
-                float fltSomaMedia;
-                fltSomaMedia = getArrayMedia(arrayPointerAdress);
-                printf(TEXT_OPTION4_RESULT, fltSomaMedia);
-
-                intOptionResult = checkExit(intArray2,intArray3);
+                intOptionResult = checkExit(fltArray1,fltArray2);
 
                 if(intOptionResult != 1)
                 {
@@ -354,9 +338,7 @@ void main(){
                     continue;
                 }
             case '5':
-                printf(TEXT_OPTION5);
-                printf(TEXT_EXIT_OPTION);
-                intExit = 0;
+                intExit = optionCase5();
                 break;
             default:
                 printf(TEXT_INVALID_OPTION);
